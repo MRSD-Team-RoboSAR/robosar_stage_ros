@@ -202,7 +202,7 @@ StageNode::mapName(const char *name, size_t robotID, Stg::Model* mod) const
         }
         else
         {
-            snprintf(buf, sizeof(buf), "robot_%u/%s", (unsigned int)robotID, name);
+            snprintf(buf, sizeof(buf), "agent_%u/%s", (unsigned int)robotID, name);
         }
 
         return buf;
@@ -228,7 +228,7 @@ StageNode::mapName(const char *name, size_t robotID, size_t deviceID, Stg::Model
         }
         else
         {
-            snprintf(buf, sizeof(buf), "/robot_%u/%s_%u", (unsigned int)robotID, name, (unsigned int)deviceID);
+            snprintf(buf, sizeof(buf), "/agent_%u/%s_%u", (unsigned int)robotID, name, (unsigned int)deviceID);
         }
 
         return buf;
