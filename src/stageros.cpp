@@ -61,7 +61,7 @@
 #define DEPTH "depth"
 #define CAMERA_INFO "camera_info"
 #define ODOM "odom"
-#define BASE_SCAN "base_scan"
+#define BASE_SCAN "feedback/scan"
 #define BASE_POSE_GROUND_TRUTH "base_pose_ground_truth"
 #define CMD_VEL "cmd_vel"
 #define POSE "cmd_pose"
@@ -511,9 +511,9 @@ StageNode::WorldCallback()
                 }
 
                 if (robotmodel->lasermodels.size() > 1)
-                    msg.header.frame_id = mapName("base_laser_link", r, s, static_cast<Stg::Model*>(robotmodel->positionmodel));
+                    msg.header.frame_id = mapName("base_link", r, s, static_cast<Stg::Model*>(robotmodel->positionmodel));
                 else
-                    msg.header.frame_id = mapName("base_laser_link", r, static_cast<Stg::Model*>(robotmodel->positionmodel));
+                    msg.header.frame_id = mapName("base_link", r, static_cast<Stg::Model*>(robotmodel->positionmodel));
 
                 msg.header.stamp = sim_time;
                 robotmodel->laser_pubs[s].publish(msg);
