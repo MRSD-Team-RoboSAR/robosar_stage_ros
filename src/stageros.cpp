@@ -543,11 +543,20 @@ StageNode::WorldCallback()
                                               mapName("base_link", r, static_cast<Stg::Model*>(robotmodel->positionmodel))));
 
         // Get latest odometry data
+        Stg::Pose gpose = robotmodel->positionmodel->GetGlobalPose();
+        tf::Quaternion q_gpose;
+        q_gpose.setRPY(0.0, 0.0, gpose.a);
+        tf::Transform gt(q_gpose, tf::Point(gpose.x, gpose.y, 0.0));
+
         // Translate into ROS message format and publish
         nav_msgs::Odometry odom_msg;
-        odom_msg.pose.pose.position.x = robotmodel->positionmodel->est_pose.x;
-        odom_msg.pose.pose.position.y = robotmodel->positionmodel->est_pose.y;
-        odom_msg.pose.pose.orientation = tf::createQuaternionMsgFromYaw(robotmodel->positionmodel->est_pose.a);
+        odom_msg.pose.pose.position.x = gt.getOrigin().x();
+        odom_msg.pose.pose.position.y = gt.getOrigin().y();
+        //odom_msg.pose.pose.orientation = tf::createQuaternionMsgFromYaw(robotmodel->positionmodel->est_pose.a);
+        odom_msg.pose.pose.orientation.x  = gt.getRotation().x();
+        odom_msg.pose.pose.orientation.y  = gt.getRotation().y();
+        odom_msg.pose.pose.orientation.z  = gt.getRotation().z();
+        odom_msg.pose.pose.orientation.w  = gt.getRotation().w();
         Stg::Velocity v = robotmodel->positionmodel->GetVelocity();
         odom_msg.twist.twist.linear.x = v.x;
         odom_msg.twist.twist.linear.y = v.y;
@@ -576,10 +585,7 @@ StageNode::WorldCallback()
                                               mapName("base_footprint", r, static_cast<Stg::Model*>(robotmodel->positionmodel))));
 
         // Also publish the ground truth pose and velocity
-        Stg::Pose gpose = robotmodel->positionmodel->GetGlobalPose();
-        tf::Quaternion q_gpose;
-        q_gpose.setRPY(0.0, 0.0, gpose.a);
-        tf::Transform gt(q_gpose, tf::Point(gpose.x, gpose.y, 0.0));
+       
         // Velocity is 0 by default and will be set only if there is previous pose and time delta>0
         Stg::Velocity gvel(0,0,0,0);
         if (this->base_last_globalpos.size()>r){
